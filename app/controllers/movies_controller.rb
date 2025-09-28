@@ -8,9 +8,19 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.all_ratings()
-    @ratings_to_show = params[:ratings]&.keys || @all_ratings
+    @ratings_to_show = params[:ratings]&.keys || Movie.all_ratings
+    @sort_by = params[:sort_by]
+
     @movies = Movie.with_ratings(@ratings_to_show)
-  end
+
+    @movies =
+    case @sort_by
+    when 'title'        then @movies.order(:title)
+    when 'release_date' then @movies.order(:release_date)
+    else                     @movies
+    end
+end
+
 
   def new
     # default: render 'new' template
